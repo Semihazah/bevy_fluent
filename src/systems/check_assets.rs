@@ -6,9 +6,8 @@ use bevy::{
     utils::tracing::{self, instrument},
 };
 
-#[instrument(fields(handles = handles.len(), state = ?*state), skip(commands, asset_server, events))]
+#[instrument(fields(handles = handles.len(), state = ?*state), skip(asset_server, events))]
 pub(crate) fn check_assets(
-    mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut events: ResMut<Events<AppExit>>,
     handles: Res<Handles>,
@@ -19,7 +18,6 @@ pub(crate) fn check_assets(
         LoadState::Failed => events.send(AppExit),
         LoadState::Loaded => {
             debug!(load_state = ?LoadState::Loaded);
-            commands.remove_resource::<Handles>();
             state.set_next(FluentState::TakeSnapshot).unwrap();
         }
         _ => {}

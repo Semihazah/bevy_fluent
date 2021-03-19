@@ -1,27 +1,23 @@
-use bevy::prelude::*;
+use bevy::prelude::{stage::UPDATE, *};
 use bevy_fluent::{prelude::*, utils::BundleExt, Snapshot};
 use unic_langid::langid;
 
+static GAME_STATE: &str = "game";
+
 pub fn main() {
     App::build()
-        .insert_resource(FluentSettings::default().with_default_locale(langid!("ru-RU")))
+        .add_resource(FluentSettings::default().with_default_locale(langid!("ru-RU")))
         .add_plugins(DefaultPlugins)
         .add_plugin(FluentPlugin)
-        .add_state(GameState::Initialize)
-        .add_system_set(
-            SystemSet::on_update(GameState::Initialize).with_system(check_fluent_state.system()),
-        )
-        .add_system_set(
-            SystemSet::on_enter(GameState::Play).with_system(localized_hello_world.system()),
-        )
+        .add_resource(State::new(GameState::Initialize))
+        .add_stage_before(UPDATE, GAME_STATE, StateStage::<GameState>::default())
+        .on_state_update(GAME_STATE, GameState::Initialize, check_fluent.system())
+        .on_state_enter(GAME_STATE, GameState::Play, localized_hello_world.system())
         .run();
 }
 
-fn check_fluent_state(
-    fluent_state: Res<State<FluentState>>,
-    mut game_state: ResMut<State<GameState>>,
-) {
-    if *fluent_state.current() == FluentState::Done {
+fn check_fluent(fluent_state: Res<State<FluentState>>, mut game_state: ResMut<State<GameState>>) {
+    if **fluent_state == FluentState::Done {
         game_state.set_next(GameState::Play).unwrap();
     }
 }

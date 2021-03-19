@@ -5,7 +5,7 @@ use bevy::{
 };
 
 #[instrument(fields(state = ?*state), skip(commands))]
-pub(crate) fn take_snapshot(mut commands: Commands, mut state: ResMut<State<FluentState>>) {
+pub(crate) fn take_snapshot(commands: &mut Commands, mut state: ResMut<State<FluentState>>) {
     trace!("call");
     commands.init_resource::<Snapshot>();
     state.set_next(FluentState::Done).unwrap();

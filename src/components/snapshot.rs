@@ -1,7 +1,6 @@
 use crate::{
-    FluentSettings,
     utils::{bundle::Request, BundleExt},
-    FluentAsset,
+    FluentAsset, FluentSettings,
 };
 use bevy::{
     prelude::*,
@@ -87,23 +86,22 @@ impl BundleExt for Snapshot {
     }
 }
 
-impl FromWorld for Snapshot {
-    fn from_world(world: &mut World) -> Self {
+impl FromResources for Snapshot {
+    fn from_resources(resources: &Resources) -> Self {
         let FluentSettings {
             default_locale,
             fallback_locale_chain,
             ..
-        } = world
-            .get_resource::<FluentSettings>()
-            .expect("get `Settings` resource");
-        let fluent_assets = world
-            .get_resource::<Assets<FluentAsset>>()
+        } = &*resources
+            .get::<FluentSettings>()
+            .expect("get `FluentSettings` resource");
+        let fluent_assets = &resources
+            .get::<Assets<FluentAsset>>()
             .expect("get `Assets<Resource>` resource");
-
         #[cfg(feature = "implicit")]
-        let locale_handles = implicit::retrieve_locale_handles(world);
+        let locale_handles = implicit::retrieve_locale_handles(resources);
         #[cfg(not(feature = "implicit"))]
-        let locale_handles = explicit::retrieve_locale_handles(world);
+        let locale_handles = explicit::retrieve_locale_handles(resources);
         let available_locales: Vec<_> = locale_handles.keys().flatten().collect();
         let supported_locales =
             request_locales(&available_locales, default_locale, fallback_locale_chain);
@@ -150,7 +148,7 @@ impl Deref for Snapshot {
 
 #[cfg(feature = "implicit")]
 mod implicit {
-    use crate::{FluentSettings, FluentAsset};
+    use crate::{FluentAsset, FluentSettings};
     use bevy::{
         asset::{AssetPath, AssetServerSettings},
         prelude::*,
@@ -160,18 +158,18 @@ mod implicit {
     use unic_langid::LanguageIdentifier;
     use walkdir::WalkDir;
 
-    #[instrument(skip(world))]
+    #[instrument(skip(resources))]
     pub(super) fn retrieve_locale_handles(
-        world: &World,
+        resources: &Resources,
     ) -> HashMap<Option<LanguageIdentifier>, Vec<Handle<FluentAsset>>> {
-        let AssetServerSettings { asset_folder } = world
-            .get_resource::<AssetServerSettings>()
+        let AssetServerSettings { asset_folder } = &*resources
+            .get::<AssetServerSettings>()
             .expect("get AssetServerSettings resource");
-        let FluentSettings { locales_folder, .. } = world
-            .get_resource::<FluentSettings>()
+        let FluentSettings { locales_folder, .. } = &*resources
+            .get::<FluentSettings>()
             .expect("get FluentSettings resource");
-        let asset_server = world
-            .get_resource::<AssetServer>()
+        let asset_server = resources
+            .get::<AssetServer>()
             .expect("get AssetServer resource");
         let mut locale_handles = HashMap::new();
         for entry in WalkDir::new(Path::new(asset_folder).join(locales_folder)) {
@@ -224,10 +222,7 @@ mod implicit {
 
 #[cfg(not(feature = "implicit"))]
 mod explicit {
-    use crate::{
-        {FluentAsset, LocaleAssets},
-        FluentSettings,
-    };
+    use crate::{FluentAsset, FluentSettings, LocaleAssets};
     use bevy::{
         asset::AssetServerSettings,
         prelude::*,
@@ -237,21 +232,21 @@ mod explicit {
     use unic_langid::LanguageIdentifier;
     use walkdir::WalkDir;
 
-    #[instrument(skip(world))]
+    #[instrument(skip(resources))]
     pub(super) fn retrieve_locale_handles(
-        world: &World,
+        resources: &Resources,
     ) -> HashMap<Option<LanguageIdentifier>, Vec<Handle<FluentAsset>>> {
-        let AssetServerSettings { asset_folder } = world
-            .get_resource::<AssetServerSettings>()
+        let AssetServerSettings { asset_folder } = &*resources
+            .get::<AssetServerSettings>()
             .expect("get `AssetServerSettings` resource");
-        let FluentSettings { locales_folder, .. } = world
-            .get_resource::<FluentSettings>()
-            .expect("get `Settings` resource");
-        let asset_server = world
-            .get_resource::<AssetServer>()
+        let FluentSettings { locales_folder, .. } = &*resources
+            .get::<FluentSettings>()
+            .expect("get `FluentSettings` resource");
+        let asset_server = resources
+            .get::<AssetServer>()
             .expect("get `AssetServer` resource");
-        let locale_assets = world
-            .get_resource::<Assets<LocaleAssets>>()
+        let locale_assets = resources
+            .get::<Assets<LocaleAssets>>()
             .expect("get `Assets<Bundle>` resource");
         let mut locale_handles = HashMap::new();
         for entry in WalkDir::new(Path::new(asset_folder).join(locales_folder)) {

@@ -7,7 +7,7 @@ use std::path::Path;
 
 #[instrument(fields(locales_folder = %settings.locales_folder), skip(commands, asset_server, settings))]
 pub(crate) fn load_assets(
-    mut commands: Commands,
+    commands: &mut Commands,
     asset_server: Res<AssetServer>,
     settings: Res<FluentSettings>,
 ) {
