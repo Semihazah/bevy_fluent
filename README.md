@@ -14,10 +14,10 @@
 
 ## Version
 
-| bevy                                                                                       | bevy_fluent |
-| ------------------------------------------------------------------------------------------ | ----------- |
-| [main](https://github.com/bevyengine/bevy/commit/284889c64b2a4a4f67018e42a14062392edbd0aa) | main        |
-| 0.4                                                                                        | 0.0.1       |
+| bevy | bevy_fluent |
+| ---- | ----------- |
+| main | main        |
+| 0.4  | bevy-v0.4 |
 
 ## Todo
 
