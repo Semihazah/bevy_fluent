@@ -1,3 +1,5 @@
+//! Bundle asset module
+
 use super::ResourceAsset;
 use anyhow::Result;
 use bevy::{
@@ -39,13 +41,9 @@ async fn load_asset<'a, 'b>(bytes: &'a [u8], load_context: &'a mut LoadContext<'
     Ok(())
 }
 
-/// `FluentBundle` wrapper
+/// [`FluentBundle`](fluent::bundle::FluentBundle) wrapper
 ///
-/// Collection of [`FluentAsset`]'s handles for single locale
-///
-/// # See Also
-///
-/// [`FluentBundle`](https://docs.rs/fluent/0.15.0/fluent/bundle/struct.FluentBundle.html).
+/// Collection of [`ResourceAsset`]'s handles for a single locale
 #[derive(Clone, Debug, TypeUuid)]
 #[uuid = "929113bb-9187-44c3-87be-6027fc3b7ac5"]
 pub struct BundleAsset {

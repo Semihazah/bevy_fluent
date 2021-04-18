@@ -5,4 +5,4 @@
 
 pub use self::queue::Queue;
 
-pub mod queue;
+mod queue;
