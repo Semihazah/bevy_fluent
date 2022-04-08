@@ -14,7 +14,7 @@ use bevy::{ecs::system::IntoExclusiveSystem, prelude::*};
 pub struct FluentPlugin;
 
 impl Plugin for FluentPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_asset::<ResourceAsset>()
             .init_asset_loader::<ResourceAssetLoader>()
             .add_asset::<BundleAsset>()

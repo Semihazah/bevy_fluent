@@ -2,7 +2,7 @@ use bevy::{asset::AssetServerSettings, prelude::*};
 use bevy_fluent::prelude::*;
 
 pub fn main() {
-    App::build()
+    App::new()
         .insert_resource(AssetServerSettings {
             asset_folder: "examples/minimal/assets".to_string(),
         })

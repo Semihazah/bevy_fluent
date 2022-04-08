@@ -10,17 +10,20 @@ use bevy::{
     reflect::TypeUuid,
 };
 use indexmap::IndexSet;
-use std::hash::{Hash, Hasher};
+use std::{hash::{Hash, Hasher}, marker::PhantomData};
 
 /// Fluent server
 #[derive(SystemParam)]
-pub struct FluentServer<'a> {
-    asset_server: Res<'a, AssetServer>,
-    cache: ResMut<'a, Cache>,
-    queue: ResMut<'a, Queue>,
+pub struct FluentServer<'w, 's> {
+    asset_server: Res<'w, AssetServer>,
+    cache: ResMut<'w, Cache>,
+    queue: ResMut<'w, Queue>,
+    
+    #[system_param(ignore)]
+    phantom_data: PhantomData<&'s usize>
 }
 
-impl FluentServer<'_> {
+impl<'w, 's> FluentServer<'w, 's> {
     /// Loads locale fallback chain assets
     pub fn load<'a, I, T>(&self, paths: I) -> Handle<Localization>
     where

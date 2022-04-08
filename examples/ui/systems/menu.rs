@@ -9,7 +9,7 @@ use crate::{
 use bevy::prelude::*;
 use bevy_fluent::prelude::*;
 
-type InteractionBundle<'a> = (&'a Interaction, &'a mut Handle<ColorMaterial>);
+type InteractionBundle<'a> = (&'a Interaction, &'a mut UiColor);
 
 pub fn setup(
     mut commands: Commands,
@@ -41,7 +41,7 @@ pub fn setup(
                 justify_content: JustifyContent::FlexStart,
                 ..Default::default()
             },
-            material: color_materials.none.clone(),
+            color: color_materials.none.clone(),
             ..Default::default()
         })
         .insert(Menu)
@@ -55,7 +55,7 @@ pub fn setup(
                         align_items: AlignItems::Center,
                         ..Default::default()
                     },
-                    material: color_materials.gray25.clone(),
+                    color: color_materials.gray25.clone(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
@@ -82,7 +82,7 @@ pub fn setup(
                         margin: Rect::all(Val::Auto),
                         ..Default::default()
                     },
-                    material: color_materials.none.clone(),
+                    color: color_materials.none.clone(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
@@ -95,7 +95,7 @@ pub fn setup(
                                 align_items: AlignItems::Center,
                                 ..Default::default()
                             },
-                            material: color_materials.gray50.clone(),
+                            color: color_materials.gray50.clone(),
                             ..Default::default()
                         })
                         .insert(PreviousButton)
@@ -122,7 +122,7 @@ pub fn setup(
                                 align_items: AlignItems::Center,
                                 ..Default::default()
                             },
-                            material: color_materials.gray50.clone(),
+                            color: color_materials.gray50.clone(),
                             ..Default::default()
                         })
                         .with_children(|parent| {
@@ -148,7 +148,7 @@ pub fn setup(
                                 align_items: AlignItems::Center,
                                 ..Default::default()
                             },
-                            material: color_materials.gray50.clone(),
+                            color: color_materials.gray50.clone(),
                             ..Default::default()
                         })
                         .insert(NextButton)
@@ -200,7 +200,7 @@ pub fn next(
     mut locales: ResMut<Locales>,
     query: Query<&Interaction, (Changed<Interaction>, With<NextButton>)>,
 ) {
-    if let Ok(Interaction::Clicked) = query.single() {
+    if let Ok(Interaction::Clicked) = query.get_single() {
         locales.shift(1);
         game_state.set(GameState::Load).unwrap();
     }
@@ -211,7 +211,7 @@ pub fn previous(
     mut locales: ResMut<Locales>,
     query: Query<&Interaction, (Changed<Interaction>, With<PreviousButton>)>,
 ) {
-    if let Ok(Interaction::Clicked) = query.single() {
+    if let Ok(Interaction::Clicked) = query.get_single() {
         locales.shift(-1);
         game_state.set(GameState::Load).unwrap();
     }

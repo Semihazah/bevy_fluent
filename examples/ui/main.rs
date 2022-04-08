@@ -7,7 +7,7 @@ use bevy::{asset::AssetServerSettings, prelude::*};
 use bevy_fluent::prelude::*;
 
 fn main() {
-    App::build()
+    App::new()
         .insert_resource(bevy::log::LogSettings {
             level: bevy::log::Level::ERROR,
             filter: "bevy_fluent=trace".to_string(),

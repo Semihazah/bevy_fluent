@@ -5,24 +5,19 @@ use unic_langid::LanguageIdentifier;
 
 /// Color materials
 pub struct ColorMaterials {
-    pub gray25: Handle<ColorMaterial>,
-    pub gray50: Handle<ColorMaterial>,
-    pub gray75: Handle<ColorMaterial>,
-    pub none: Handle<ColorMaterial>,
+    pub gray25: UiColor,
+    pub gray50: UiColor,
+    pub gray75: UiColor,
+    pub none: UiColor,
 }
 
-impl FromWorld for ColorMaterials {
-    fn from_world(world: &mut World) -> Self {
-        let mut color_material = world.get_resource_mut::<Assets<ColorMaterial>>().unwrap();
-        let gray25 = color_material.add(Color::rgb(0.25, 0.25, 0.25).into());
-        let gray50 = color_material.add(Color::rgb(0.50, 0.50, 0.50).into());
-        let gray75 = color_material.add(Color::rgb(0.75, 0.75, 0.75).into());
-        let none = color_material.add(Color::NONE.into());
-        Self {
-            gray25,
-            gray50,
-            gray75,
-            none,
+impl Default for ColorMaterials {
+    fn default() -> Self {
+        ColorMaterials {
+            gray25: Color::rgb(0.25, 0.25, 0.25).into(),
+            gray50: Color::rgb(0.50, 0.50, 0.50).into(),
+            gray75: Color::rgb(0.75, 0.75, 0.75).into(),
+            none: Color::NONE.into(),
         }
     }
 }
