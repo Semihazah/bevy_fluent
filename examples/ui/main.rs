@@ -14,6 +14,7 @@ fn main() {
         })
         .insert_resource(AssetServerSettings {
             asset_folder: "examples/ui/assets".to_string(),
+            watch_for_changes: false,
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(FluentPlugin)
@@ -26,16 +27,16 @@ fn main() {
         .init_resource::<ColorMaterials>()
         .init_resource::<DefaultFont>()
         .add_state(GameState::Load)
-        .add_system_set(SystemSet::on_enter(GameState::Load).with_system(load::setup.system()))
-        .add_system_set(SystemSet::on_update(GameState::Load).with_system(load::loading.system()))
-        .add_system_set(SystemSet::on_enter(GameState::Menu).with_system(menu::setup.system()))
+        .add_system_set(SystemSet::on_enter(GameState::Load).with_system(load::setup))
+        .add_system_set(SystemSet::on_update(GameState::Load).with_system(load::loading))
+        .add_system_set(SystemSet::on_enter(GameState::Menu).with_system(menu::setup))
         .add_system_set(
             SystemSet::on_update(GameState::Menu)
-                .with_system(menu::interaction.system())
-                .with_system(menu::next.system())
-                .with_system(menu::previous.system()),
+                .with_system(menu::interaction)
+                .with_system(menu::next)
+                .with_system(menu::previous),
         )
-        .add_system_set(SystemSet::on_exit(GameState::Menu).with_system(menu::cleanup.system()))
+        .add_system_set(SystemSet::on_exit(GameState::Menu).with_system(menu::cleanup))
         .run();
 }
 

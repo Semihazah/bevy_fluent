@@ -5,10 +5,12 @@ pub fn main() {
     App::new()
         .insert_resource(AssetServerSettings {
             asset_folder: "examples/minimal/assets".to_string(),
+            watch_for_changes: false,
+            
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(FluentPlugin)
-        .add_system(localized_hello_world.system())
+        .add_system(localized_hello_world)
         .run();
 }
 
